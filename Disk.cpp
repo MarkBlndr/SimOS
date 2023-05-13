@@ -3,27 +3,45 @@
 
 #include "Disk.h"
 
-// TODO: Adjust functions to queue calls after vec has been updated to queue
-
-bool Disk::DiskRequest(int PID, std::string fn) {
-    // Start disk request if idle, else add to queue
+void Disk::DiskReadRequest(int PID, std::string fileName) {
+    // Start disk job if idle, else add to queue
     if (idle) {
-        currentRequest.PID = PID;
-        currentRequest.fileName = fn;
+        currentJob.PID = PID;
+        currentJob.fileName = fileName;
         idle = false;
     }
     else {
-        diskQueue.push(FileReadRequest{PID, fn});
+        diskQueue.push(FileReadRequest{PID, fileName});
     }
-
-    // Should return false if something went wrong
-    return true;
 }
 
-FileReadRequest Disk::getCurrentRequest() {
-    return currentRequest;
+FileReadRequest Disk::getCurrentJob() {
+    return currentJob;
 }
 
 std::queue<FileReadRequest> Disk::getDiskQueue() {
     return diskQueue;
+}
+
+int Disk::DiskJobCompleted() {
+    // Disk is idle, no job to complete
+    if (idle) {
+        return -1;
+    }
+    else {
+        int PID = currentJob.PID;
+        if (!diskQueue.empty()) {
+            currentJob.fileName = diskQueue.front().fileName;
+            currentJob.PID = diskQueue.front().PID;
+            diskQueue.pop();
+            return PID;
+        }
+        else {
+            // Set currentJob to default (idle)
+            currentJob.fileName = "";
+            currentJob.PID = 0;
+            idle = true;
+            return PID;
+        }
+    }
 }

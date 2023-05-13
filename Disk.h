@@ -11,12 +11,13 @@
 class Disk {
 public:
     //Disk(); No need it seems
-    bool DiskRequest(int, std::string);
-    FileReadRequest getCurrentRequest();
+    void DiskReadRequest(int, std::string);
+    FileReadRequest getCurrentJob();
     std::queue<FileReadRequest> getDiskQueue();
+    int DiskJobCompleted();
 
 private:
-    FileReadRequest currentRequest;
+    FileReadRequest currentJob;
     bool idle{true};
     std::queue<FileReadRequest> diskQueue;
 };
