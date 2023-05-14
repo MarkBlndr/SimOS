@@ -2,6 +2,7 @@
 // SimOS implementation 
 
 #include "Disk.h"
+#include "Memory.h"
 #include "CPU.h"
 
 #include <vector>
@@ -11,7 +12,13 @@ class SimOS {
 public:
     SimOS(int, unsigned long long);
 
-    //bool NewProcess(int, unsigned long long);
+    bool NewProcess(int, unsigned long long);
+    // MemoryUsage GetMemory( )
+    MemoryUsage GetMemory();
+    
+    // TODO: For testing
+    void KillProcess(int);
+
     //bool SimFork();
     //void SimExit();
     //void SimWait();
@@ -24,4 +31,7 @@ public:
 
 private:
     std::vector<Disk> disks;
+    Memory memory;
+
+    int nextPID;
 };

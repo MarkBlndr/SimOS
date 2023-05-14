@@ -10,6 +10,30 @@ SimOS::SimOS(int numberOfDisks, unsigned long long amountOfRAM) {
     for (int i = 0; i < numberOfDisks; i++) {
         disks.push_back(Disk());
     }
+    memory.Init(amountOfRAM);
+    nextPID = 1;
+}
+
+bool SimOS::NewProcess(int priority, unsigned long long size) {
+    bool test = memory.FindAndInsert(size, nextPID);
+
+    // Test code, delete later
+    if (test) {
+        nextPID++;
+        return true;
+    }
+    return false;
+
+    // Process p(PID, priority)
+}
+
+MemoryUsage SimOS::GetMemory() {
+    return memory.GetMemory();
+}
+
+// TODO: FOR TESTIGN
+void SimOS::KillProcess(int PID) {
+    memory.KillProcess(PID);
 }
 
 // TODO: PID should come from CPU, not passed in as argument
