@@ -23,6 +23,11 @@ bool SimOS::NewProcess(int priority, unsigned long long size) {
 }
 
 bool SimOS::SimFork() {
+    // If CPU is idle, do nothing
+    if (!GetCPU()) {
+        return false;
+    }
+
     int parentPID = GetCPU(), childPID = nextPID;
     Process parentProcess = processes[parentPID];
     bool forked = NewProcess(parentProcess.priority, parentProcess.size);
@@ -45,6 +50,11 @@ void SimOS::findChildren(int PID, std::vector<int> &vec) {
 }
 
 void SimOS::SimExit() {
+    // If CPU is idle, do nothing
+    if (!GetCPU()) {
+        return;
+    }
+
     int exitingPID = GetCPU();
     int parentPID = processes[exitingPID].parentPID;
 
@@ -53,6 +63,10 @@ void SimOS::SimExit() {
         findChildren(child, vec);
     }
     for (int i = 0; i < vec.size(); i++) {
+        cpu.RemoveFromQueue(vec[i]);
+        for (int i = 0; i < disks.size(); i++) {
+            disks[i].RemoveFromDiskQueue(vec[i]);
+        }
         memory.Terminate(vec[i]);
         processes.erase(vec[i]);
     }
@@ -74,6 +88,7 @@ void SimOS::SimExit() {
         cpu.IncomingProcess(processes[parentPID].priority, parentPID);
     }
     else {
+        cpu.NextProcess();
         memory.Terminate(exitingPID);
         processes[exitingPID].terminated = true;
     }

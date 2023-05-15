@@ -45,3 +45,20 @@ int Disk::DiskJobCompleted() {
         }
     }
 }
+
+void Disk::RemoveFromDiskQueue(int PID) {
+    std::queue<FileReadRequest> tempQueue;
+    while(!diskQueue.empty()) {
+        if (diskQueue.front().PID != PID) {
+            tempQueue.push(diskQueue.front());
+            diskQueue.pop();
+        }
+        else {
+            diskQueue.pop();
+        }
+    }
+    while(!tempQueue.empty()) {
+        diskQueue.push(tempQueue.front());
+        tempQueue.pop();
+    }
+}

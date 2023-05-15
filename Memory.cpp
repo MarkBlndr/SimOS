@@ -3,7 +3,6 @@
 
 #include "Memory.h"
 #include "climits"
-#include <iostream>
 
 void Memory::Init(unsigned long long amountOfRAM) {
     mSize = amountOfRAM;

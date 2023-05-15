@@ -14,6 +14,7 @@ public:
     FileReadRequest getCurrentJob();
     std::queue<FileReadRequest> getDiskQueue();
     int DiskJobCompleted();
+    void RemoveFromDiskQueue(int);
 
 private:
     FileReadRequest currentJob;

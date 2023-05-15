@@ -69,3 +69,19 @@ std::vector<int> CPU::GetQueue() {
 
     return returnVec;
 }
+
+void CPU::RemoveFromQueue(int PID) {
+    std::vector<std::pair<int, int>> vecQueue;
+    while (!readyQueue.empty()) {
+        if (readyQueue.top().second != PID) {
+            vecQueue.push_back(readyQueue.top());
+            readyQueue.pop();
+        }
+        else {
+            readyQueue.pop();
+        }
+    }
+    for (auto process : vecQueue) {
+        readyQueue.push(process);
+    }
+}
