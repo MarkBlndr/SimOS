@@ -24,8 +24,6 @@ public:
     void SimExit();
     void SimWait();
 
-    void findChildren(int, std::vector<int>&);
-
     // Disk management
     void DiskReadRequest(int, std::string);
     FileReadRequest GetDisk(int);
@@ -33,6 +31,7 @@ public:
     void DiskJobCompleted(int);
 
 private:
+    void findChildren(int, std::vector<int>&);
     std::vector<Disk> disks;
     Memory memory;
     CPU cpu;

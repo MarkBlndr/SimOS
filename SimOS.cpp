@@ -52,7 +52,6 @@ void SimOS::SimExit() {
     for (auto child : processes[exitingPID].children) {
         findChildren(child, vec);
     }
-
     for (int i = 0; i < vec.size(); i++) {
         memory.Terminate(vec[i]);
         processes.erase(vec[i]);
@@ -60,11 +59,12 @@ void SimOS::SimExit() {
 
     if (processes[parentPID].waiting) {
         // Remove child from parent
-        for (std::vector<int>::iterator it = processes[parentPID].children.begin(); it != processes[parentPID].children.end(); ++it) {
+        for (std::vector<int>::iterator it = processes[parentPID].children.begin(); it < processes[parentPID].children.end(); ++it) {
             if (*it == exitingPID) {
                 processes[parentPID].children.erase(it);
             }
         }
+
         memory.Terminate(exitingPID); // Remove exiting process from memory 
         processes.erase(exitingPID); // Remove exiting process from processes
 
@@ -89,14 +89,18 @@ void SimOS::SimWait() {
         cpu.NextProcess();
         cpu.IncomingProcess(processes[waitingPID].priority, waitingPID);
         return;
+    } 
+    else {
+        cpu.NextProcess();
     }
+
     // Check for zombie children
     int zombieChild = -1;
     for (auto child : processes[waitingPID].children) {
-        if (processes[child].terminated == true) {
+        if (processes[child].terminated) {
             zombieChild = child;
             processes.erase(child);
-            break;
+            break; // Found zombie child 
         }
     }
     // If zombie child is found, remove from parent and send parent to ready-queue
