@@ -2,6 +2,7 @@
 // Memory: manages memory by finding space in RAM for new processes and removing processes from mem
 
 #include "Memory.h"
+#include "climits"
 
 void Memory::Init(unsigned long long amountOfRAM) {
     mSize = amountOfRAM;
