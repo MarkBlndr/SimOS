@@ -10,8 +10,7 @@ public:
     MemoryUsage GetMemory();
     static bool comparator(MemoryItem&, MemoryItem&);
     bool FindAndInsert(unsigned long long &, int);
-
-    // TODO: For testing
+    
     void Terminate(int);
 
 private:

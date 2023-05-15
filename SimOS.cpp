@@ -122,14 +122,14 @@ std::queue<FileReadRequest> SimOS::GetDiskQueue(int diskNumber) {
 
 void SimOS::DiskJobCompleted(int diskNumber) {
     if (diskNumber > (disks.size() - 1)) {
-        std::cout << "ERROR: DISK" << diskNumber << " not found" << std::endl;
+        //std::cout << "ERROR: DISK" << diskNumber << " not found" << std::endl;
         return;
     }
 
     int PID = disks[diskNumber].DiskJobCompleted();
     
     if (PID == -1) {
-        std::cout << "ERROR: DISK" << diskNumber << " is idle" << std::endl;
+        //std::cout << "ERROR: DISK" << diskNumber << " is idle" << std::endl;
         return;
     }
 
