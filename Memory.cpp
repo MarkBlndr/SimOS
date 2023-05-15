@@ -3,6 +3,7 @@
 
 #include "Memory.h"
 #include "climits"
+#include <iostream>
 
 void Memory::Init(unsigned long long amountOfRAM) {
     mSize = amountOfRAM;
@@ -76,6 +77,7 @@ void Memory::Terminate(int PID) {
     for (MemoryUsage::iterator it = mem.begin(); it != mem.end(); ++it) {
         if (it->PID == PID) {
             mem.erase(it);
+            break;
         }
     }
 }

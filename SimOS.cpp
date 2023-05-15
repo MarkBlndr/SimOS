@@ -9,7 +9,6 @@ SimOS::SimOS(int numberOfDisks, unsigned long long amountOfRAM) {
         disks.push_back(Disk());
     }
     memory.Init(amountOfRAM);
-    nextPID = 1;
 }
 
 bool SimOS::NewProcess(int priority, unsigned long long size) {
@@ -36,14 +35,27 @@ bool SimOS::SimFork() {
     return false;
 }
 
+void SimOS::findChildren(int PID, std::vector<int> &vec) {
+    if (!processes[PID].children.empty()) {
+        for (int child : processes[PID].children) {
+            findChildren(child, vec);
+        }
+    }
+    vec.push_back(PID);
+}
+
 void SimOS::SimExit() {
     int exitingPID = GetCPU();
     int parentPID = processes[exitingPID].parentPID;
 
-    // Terminate children of process
+    std::vector<int> vec;
     for (auto child : processes[exitingPID].children) {
-        memory.Terminate(child); // remove from memory
-        processes.erase(child); // remove from process table/list
+        findChildren(child, vec);
+    }
+
+    for (int i = 0; i < vec.size(); i++) {
+        memory.Terminate(vec[i]);
+        processes.erase(vec[i]);
     }
 
     if (processes[parentPID].waiting) {
@@ -104,12 +116,17 @@ int SimOS::GetCPU() {
     return cpu.GetCPU();
 }
 
+std::vector<int> SimOS::GetReadyQueue() {
+    return cpu.GetQueue();
+}
+
 MemoryUsage SimOS::GetMemory() {
     return memory.GetMemory();
 }
 
 void SimOS::DiskReadRequest(int diskNumber, std::string fileName) {
     disks[diskNumber].DiskReadRequest(GetCPU(), fileName);
+    cpu.NextProcess();
 }
 
 FileReadRequest SimOS::GetDisk(int diskNumber) {

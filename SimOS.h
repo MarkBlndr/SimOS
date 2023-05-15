@@ -18,10 +18,13 @@ public:
     MemoryUsage GetMemory();
 
     int GetCPU(); // return PID of current process, if idle return 0
+    std::vector<int> GetReadyQueue();
 
     bool SimFork();
     void SimExit();
     void SimWait();
+
+    void findChildren(int, std::vector<int>&);
 
     // Disk management
     void DiskReadRequest(int, std::string);
@@ -34,5 +37,5 @@ private:
     Memory memory;
     CPU cpu;
     std::unordered_map<int, Process> processes;
-    int nextPID;
+    int nextPID = 1;
 };

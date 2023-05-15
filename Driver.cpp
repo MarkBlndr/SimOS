@@ -6,19 +6,92 @@
 using namespace std;
 
 int main() {
-    SimOS sim(2, 64000000000);
 
-    // // TESTING CPU
-    // sim.NewProcess(3,2000000000);
-    // cout << "Current Process using CPU: " << sim.GetCPU() << endl;
+    SimOS sim(2, 1000000);
+
+    sim.GetReadyQueue();
+
+
+    sim.NewProcess(6, 10000); // 1
+    sim.SimFork(); // 2 p6 from 1 
+    sim.SimFork(); // 3 p6 from 1
+    sim.DiskReadRequest(0, "my.doc"); // 1 goes to disk 0
+
+    // cout << "Using CPU: (should be 3) " << sim.GetCPU() << endl;
+
+    sim.SimFork(); // 4 p6 from 3
+
+    //cout << "debug 1" << endl;
+
+    sim.DiskReadRequest(1, "my.doc"); // 3 goes to disk 1
+    sim.DiskReadRequest(1, "my.doc"); // 4 goes to disk 1
+    sim.DiskReadRequest(1, "my.doc"); // 2 goes to disk 1
+
+    // cout << endl;
+    // // DISK QUEUE PRINT OUT
+    // cout << "CURRENT JOB: " << sim.GetDisk(1).fileName << " " << sim.GetDisk(1).PID << endl;
+    // queue<FileReadRequest> dqTemp = sim.GetDiskQueue(1);
+    // cout << "DISK1 QUEUE:" << endl;
+    // for (size_t i = 0; i < dqTemp.size(); i++) {
+    //     cout << i+1 << ": " << dqTemp.front().fileName << " " << dqTemp.front().PID << endl;;
+    //     dqTemp.push(dqTemp.front()); // This is added so that the queue size does not change
+    //     dqTemp.pop();
+    // }
+
+    //cout << "Using CPU: (should be idle 0) " << sim.GetCPU() << endl;
+
+    sim.DiskJobCompleted(0); // 1 comes back to CPU
+
+    //cout << "Using CPU: (should be 1) " << sim.GetCPU() << endl;
+
+    sim.DiskJobCompleted(1); // 3 comes back to CPU queue
+
+    //cout << "Using CPU: (should be 1) " << sim.GetCPU() << endl;
+
+    // cout << endl;
+    // cout << "Ready queue (should be 3): ";
+    // for (int p : sim.GetReadyQueue()) {
+    //     cout << p << " ";
+    // }
+    // cout << endl;
+
+    sim.SimExit();
+
+    cout << endl;
+    cout << "mem print out: " << endl;
+    MemoryUsage mem = sim.GetMemory();
+    for (auto process : mem) {
+        cout << "P" << process.PID << " [" << process.itemAddress << ", " << (process.itemAddress + process.itemSize) - 1 << "]" << endl;
+    }
     
-    // // Testing preemption
-    // sim.NewProcess(5,2000000000);
-    // cout << "After new Process with higher priority is created: " << sim.GetCPU() << endl;
 
-    // TESTING FORK
+    // cout << "Using CPU: " << sim.GetCPU() << endl;
+    // cout << "Using DISK0: " << sim.GetDisk(0).PID << endl;
 
-    cout << "testing fork:" << sim.SimFork() << endl;
+    // cout << "Using CPU: " << sim.GetCPU() << endl;
+
+    // cout << "Ready queue:";
+    // for (int p : sim.GetReadyQueue()) {
+    //     cout << p << " ";
+    // }
+    // cout << endl;
+
+
+
+
+    // SimOS sim(2, 64000000000);
+
+    // // // TESTING CPU
+    // // sim.NewProcess(3,2000000000);
+    // // cout << "Current Process using CPU: " << sim.GetCPU() << endl;
+    
+    // // // Testing preemption
+    // // sim.NewProcess(5,2000000000);
+    // // cout << "After new Process with higher priority is created: " << sim.GetCPU() << endl;
+
+    // // TESTING FORK
+
+    // cout << "testing fork:" << sim.SimFork() << endl;
 
 
 
@@ -93,5 +166,5 @@ int main() {
     // }
 
 
-    return 0;
+    //return 0;
 }
