@@ -1,7 +1,9 @@
+// Mark Blinder
+// MemoryItem: representation of a process in memory
+
 #include <vector>
 
-struct MemoryItem
-{
+struct MemoryItem {
     unsigned long long itemAddress;
     unsigned long long itemSize;
     int PID; // PID of the process using this chunk of memory

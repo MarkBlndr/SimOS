@@ -1,4 +1,4 @@
-// Author: Mark Blinder
+// Mark Blinder
 // Disk implementation
 
 #include "Disk.h"

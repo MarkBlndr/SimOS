@@ -1,9 +1,15 @@
 // Author: Mark Blinder
-// Process class
+// Process: representation of a process for the OS processes table/list
 
-class Process {
-public:
+#include <vector>
 
-private:
-    int PID;
+struct Process {
+    int priority = 0;
+    unsigned long long size = 0;
+    bool waiting = false;
+
+    bool terminated = false;
+    int parentPID = 0;
+    
+    std::vector<int> children;
 };

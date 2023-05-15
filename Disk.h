@@ -1,6 +1,5 @@
-// Author: Mark Blinder
-// Disk class header, handles disk read requests from OS, 
-//  contains queue of next disk requests to be processed
+// Mark Blinder
+// Disk: handles disk read requests from OS, contains queue of next disk requests to be processed
 
 #include "FileReadRequest.h"
 

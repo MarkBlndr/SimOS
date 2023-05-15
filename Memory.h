@@ -1,3 +1,6 @@
+// Author: Mark Blinder
+// Memory implementation
+
 #include "MemoryItem.h"
 #include <algorithm>
 
@@ -9,7 +12,7 @@ public:
     bool FindAndInsert(unsigned long long &, int);
 
     // TODO: For testing
-    void KillProcess(int);
+    void Terminate(int);
 
 private:
     MemoryUsage mem;

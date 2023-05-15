@@ -6,36 +6,55 @@
 using namespace std;
 
 int main() {
-    SimOS sim(2, 15);
+    SimOS sim(2, 64000000000);
 
-    // TESTING MEMORY
-    // TODO: 
-    sim.NewProcess(0, 4);
-    sim.NewProcess(0, 5);
-    sim.NewProcess(0, 3);
-    sim.NewProcess(0, 3);
-
-    // To many
-    if (!sim.NewProcess(0, 3)) {
-        cout << "Could not add new process to mem" << endl;
-    }
-
-
-    MemoryUsage mem = sim.GetMemory();
-
-    for (auto process : mem) {
-        cout << "P" << process.PID << " [" << process.itemAddress << ", " << (process.itemAddress + process.itemSize) - 1 << "]" << endl;
-    }
+    // // TESTING CPU
+    // sim.NewProcess(3,2000000000);
+    // cout << "Current Process using CPU: " << sim.GetCPU() << endl;
     
+    // // Testing preemption
+    // sim.NewProcess(5,2000000000);
+    // cout << "After new Process with higher priority is created: " << sim.GetCPU() << endl;
+
+    // TESTING FORK
+
+    cout << "testing fork:" << sim.SimFork() << endl;
 
 
 
 
-
-
-
-
-
+    // // TESTING MEMORY
+    // sim.NewProcess(0, 4);
+    // sim.NewProcess(0, 5);
+    // sim.NewProcess(0, 3);
+    // sim.NewProcess(0, 3);
+    // // To many
+    // if (!sim.NewProcess(0, 3)) {
+    //     cout << "Could not add new process to mem" << endl;
+    // }
+    // MemoryUsage mem = sim.GetMemory();
+    // for (auto process : mem) {
+    //     cout << "P" << process.PID << " [" << process.itemAddress << ", " << (process.itemAddress + process.itemSize) - 1 << "]" << endl;
+    // }
+    // cout << endl;
+    // sim.KillProcess(3);
+    // sim.KillProcess(1);
+    // cout << endl;
+    // cout << "After process kill calls" << endl;
+    // mem = sim.GetMemory();
+    // for (auto process : mem) {
+    //     cout << "P" << process.PID << " [" << process.itemAddress << ", " << (process.itemAddress + process.itemSize) - 1 << "]" << endl;
+    // }
+    // cout << endl;
+    // // Test mid small gap
+    // sim.NewProcess(0, 2);
+    // cout << endl;
+    // cout << "After process 5 add" << endl;
+    // mem = sim.GetMemory();
+    // for (auto process : mem) {
+    //     cout << "P" << process.PID << " [" << process.itemAddress << ", " << (process.itemAddress + process.itemSize) - 1 << "]" << endl;
+    // }
+    // cout << endl;
 
 
     // // TESTING DISK

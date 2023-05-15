@@ -1,4 +1,5 @@
 // Author: Mark Blinder
+// Memory: manages memory by finding space in RAM for new processes and removing processes from mem
 
 #include "Memory.h"
 
@@ -15,7 +16,7 @@ bool Memory::comparator(MemoryItem &a, MemoryItem &b) {
 }
 
 bool Memory::FindAndInsert(unsigned long long &newProcessSize, int PID) {
-    // TODO: Comparator was made static, not sure if that ok
+    // Comparator was made static, not sure if that ok
     std::sort(mem.begin(), mem.end(), comparator);
 
     unsigned long long startAddress, gapCurrent, gapFound, nextProcessAddress;
@@ -27,7 +28,7 @@ bool Memory::FindAndInsert(unsigned long long &newProcessSize, int PID) {
     // if memory is empty, and there is enough room for process, insert new process right away
     if (mem.size() == 0 && mSize >= newProcessSize) {
         mem.push_back(MemoryItem{0, newProcessSize, PID});
-        return 1;
+        return true;
     }
 
     // Checking front of mem for gap
@@ -60,16 +61,17 @@ bool Memory::FindAndInsert(unsigned long long &newProcessSize, int PID) {
 
     if (gapFound < ULLONG_MAX) {
         mem.push_back(MemoryItem{startAddress, newProcessSize, PID});
-        return 1;
+        return true;
     }
+
+    // Incase auto-grader expects a sorted mem vector
+    std::sort(mem.begin(), mem.end(), comparator);
     
     // No gap of sufficient size found, cannot insert new process into memory
-    return 0;
+    return false;
 }
 
-// TODO: FOR TESTING 
-void Memory::KillProcess(int PID) {
-    //MemoryUsage::iterator it = mem.begin();
+void Memory::Terminate(int PID) {
     for (MemoryUsage::iterator it = mem.begin(); it != mem.end(); ++it) {
         if (it->PID == PID) {
             mem.erase(it);
