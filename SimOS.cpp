@@ -56,8 +56,11 @@ void SimOS::SimExit() {
     }
 
     int exitingPID = GetCPU();
+    memory.Terminate(exitingPID);
+
     int parentPID = processes[exitingPID].parentPID;
 
+    // Find all the children of exiting process for termination
     std::vector<int> vec;
     for (auto child : processes[exitingPID].children) {
         findChildren(child, vec);
@@ -79,9 +82,8 @@ void SimOS::SimExit() {
             }
         }
 
-        memory.Terminate(exitingPID); // Remove exiting process from memory 
         processes.erase(exitingPID); // Remove exiting process from processes
-
+        
         // Send parent to ready queue (stop waiting)
         processes[parentPID].waiting = false;
         cpu.NextProcess();
@@ -89,8 +91,7 @@ void SimOS::SimExit() {
     }
     else {
         cpu.NextProcess();
-        memory.Terminate(exitingPID);
-        processes[exitingPID].terminated = true;
+        processes[exitingPID].terminated = true; // become zombie
     }
 }
 
@@ -98,15 +99,10 @@ void SimOS::SimWait() {
     int waitingPID = GetCPU();
     processes[waitingPID].waiting = true; // start waiting
 
-    // If no children, go back to ready-queue
+    // If no children, continue using the CPU
     if (processes[waitingPID].children.empty()) {
         processes[waitingPID].waiting = false;
-        cpu.NextProcess();
-        cpu.IncomingProcess(processes[waitingPID].priority, waitingPID);
         return;
-    } 
-    else {
-        cpu.NextProcess();
     }
 
     // Check for zombie children
@@ -118,16 +114,17 @@ void SimOS::SimWait() {
             break; // Found zombie child 
         }
     }
-    // If zombie child is found, remove from parent and send parent to ready-queue
+    // If zombie child is found, remove from parent and continue using CPU
     if (zombieChild > -1) {
-        for (std::vector<int>::iterator it = processes[waitingPID].children.begin(); it != processes[waitingPID].children.end(); ++it) {
+        for (std::vector<int>::iterator it = processes[waitingPID].children.begin(); it < processes[waitingPID].children.end(); ++it) {
             if (*it == zombieChild) {
                 processes[waitingPID].children.erase(it);
             }
         }
         processes[waitingPID].waiting = false;
+    }
+    else {
         cpu.NextProcess();
-        cpu.IncomingProcess(processes[waitingPID].priority, waitingPID);
     }
 }
 

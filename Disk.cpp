@@ -47,6 +47,17 @@ int Disk::DiskJobCompleted() {
 }
 
 void Disk::RemoveFromDiskQueue(int PID) {
+    if (currentJob.PID == PID) {
+        if (!diskQueue.empty()) {
+            currentJob = diskQueue.front();
+            diskQueue.pop();
+        }
+        else {
+            currentJob = FileReadRequest();
+            idle = true;
+        }
+    }
+    
     std::queue<FileReadRequest> tempQueue;
     while(!diskQueue.empty()) {
         if (diskQueue.front().PID != PID) {

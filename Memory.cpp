@@ -17,14 +17,13 @@ bool Memory::comparator(MemoryItem &a, MemoryItem &b) {
 }
 
 bool Memory::FindAndInsert(unsigned long long &newProcessSize, int PID) {
-    // Comparator was made static, not sure if that ok
+    // Comparator was made static, not sure if thats ok
     std::sort(mem.begin(), mem.end(), comparator);
 
     unsigned long long startAddress, gapCurrent, gapFound, nextProcessAddress;
 
     // Initial values for gap search
     gapFound = ULLONG_MAX;
-    //gapDifference = 0;
 
     // if memory is empty, and there is enough room for process, insert new process right away
     if (mem.size() == 0 && mSize >= newProcessSize) {
@@ -36,7 +35,6 @@ bool Memory::FindAndInsert(unsigned long long &newProcessSize, int PID) {
     nextProcessAddress = mem[0].itemAddress;
     if (nextProcessAddress >= newProcessSize) {
         gapFound = nextProcessAddress;
-        //gapDifference = gapFound - newProcessSize;
         startAddress = 0;
     }
 
@@ -62,6 +60,7 @@ bool Memory::FindAndInsert(unsigned long long &newProcessSize, int PID) {
 
     if (gapFound < ULLONG_MAX) {
         mem.push_back(MemoryItem{startAddress, newProcessSize, PID});
+        std::sort(mem.begin(), mem.end(), comparator);
         return true;
     }
 
@@ -73,7 +72,7 @@ bool Memory::FindAndInsert(unsigned long long &newProcessSize, int PID) {
 }
 
 void Memory::Terminate(int PID) {
-    for (MemoryUsage::iterator it = mem.begin(); it != mem.end(); ++it) {
+    for (MemoryUsage::iterator it = mem.begin(); it < mem.end(); ++it) {
         if (it->PID == PID) {
             mem.erase(it);
             break;
